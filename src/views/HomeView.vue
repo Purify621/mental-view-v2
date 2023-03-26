@@ -117,13 +117,39 @@
             alt=""
           />
         </div>
-        <!-- <p style="z-index: 5" v-for="item in popularscience" :key="item.id">
-          {{ item.title }}
-        </p> -->
         <div class="container">
-          <el-col :span="24">
-            
-          </el-col>
+          <el-row>
+            <el-col :span="12">
+              <div class="box">
+                <img src="../assets/svg/icon-1.svg" alt="" />
+                <span>知识科普</span>
+              </div>
+              <div class="content">
+                <router-link
+                  v-for="item in article1"
+                  :key="item.id"
+                  :to="'/article/' + item.id"
+                >
+                  {{ item.title }}</router-link
+                >
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="box">
+                <img src="../assets/svg/icon-3.svg" alt="" />
+                <span>前沿进展</span>
+              </div>
+              <div class="content">
+                <router-link
+                  v-for="item in article3"
+                  :key="item.id"
+                  :to="'/article/' + item.id"
+                >
+                  {{ item.title }}</router-link
+                >
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </el-main>
@@ -149,6 +175,10 @@ export default {
       popularscience: {},
       // 控制汉堡按钮展开和隐藏菜单显示的状态
       minactive: false,
+      // 科普文章分类
+      article1: [],
+      article2: [],
+      article3: [],
     };
   },
   computed: {
@@ -168,9 +198,16 @@ export default {
         this.questionBank = res.data;
       });
     },
+    // 获取知识科普信息
     getPopularscience() {
       getPopularscienceAll().then((res) => {
-        this.popularscience = res.data;
+        res.data.forEach((item) => {
+          if (item.type == "心理科普") {
+            this.article1.push(item);
+          } else if (item.type == "前沿进展") {
+            this.article3.push(item);
+          }
+        });
       });
     },
     jump(dom) {
@@ -695,7 +732,68 @@ export default {
         margin: 0 auto;
         border-radius: 20px;
         position: relative;
-        border: red solid 1px;
+        .el-row {
+          padding: 50px 30px 50px 30px;
+          .el-col {
+            height: 85vh;
+            // 知识科普标题盒子
+            .box {
+              width: 220px;
+              height: 130px;
+              margin: 40px auto;
+              border-radius: 10px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              background-color: white;
+              transition: 0.5s all;
+              cursor: pointer;
+              img {
+                width: 50px;
+                margin-bottom: 20px;
+              }
+              &:hover {
+                transform: translateY(-10px);
+                transition: 0.5s all;
+              }
+            }
+            // 知识科普内容盒子
+            .content {
+              width: 80%;
+              height: 350px;
+              margin: 0 auto;
+              overflow: hidden;
+              // 知识科普标题显示区域
+              a {
+                width: 100%;
+                text-decoration: none;
+                color: black;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                line-height: 30px;
+                position: relative; /* 父元素需要有定位，这样 ::before 元素才能相对定位 */
+                display: inline-block; /* 使下划线仅覆盖文本的宽度 */
+                padding-bottom: 0.1em; /* 给下划线留出空间 */
+                &::before {
+                  content: ""; /* 伪元素需要有 content 属性，这里为空 */
+                  position: absolute; /* 相对定位于父元素 */
+                  right: 0; /* 移出从右退出 */
+                  bottom: 0; /* 置于文本下方 */
+                  width: 0%; /* 初始宽度为0 */
+                  height: 2px; /* 下划线高度 */
+                  background-color: black; /* 下划线颜色 */
+                  transition: width 0.6s ease-out; /* 过渡动画 */
+                }
+                &:hover::before {
+                  left: 0; // 移入从左显示
+                  width: 100%;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

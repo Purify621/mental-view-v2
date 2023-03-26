@@ -1,11 +1,10 @@
 import { login } from "@/api/user";
-import { getToken, setToken, removeToken } from "@/utils/auth"; // 设置cookie
+import { setToken, removeToken } from "@/utils/auth"; // 设置cookie
 
 // 定义默认 state
 const getDefaultState = () => {
   return {
-    token: getToken(),
-    // 四个基本信息
+    token: "",
     name: "",
     avatar: "",
     school: "",
@@ -53,6 +52,8 @@ const actions = {
           commit("SET_SCHOOL", data.user.school);
           // 存储用户id
           commit("SET_ID", data.user.sid);
+          // 存储token
+          commit("SET_TOKEN", data.token);
           // 设置token
           setToken(data.token);
           resolve("登录成功");
