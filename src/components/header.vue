@@ -32,7 +32,7 @@
       <!-- 用户头像信息组件 -->
       <AvatarWrapper v-if="name" class="avatar_wrapper"></AvatarWrapper>
       <div v-else class="border-box">
-        <div class="content">登录</div>
+        <div class="content" @click="toLogin">登录</div>
       </div>
     </nav>
     <!-- 汉堡菜单 在页面小于992px的情况下展示 -->
@@ -70,7 +70,11 @@ export default {
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    toLogin() {
+      this.$router.push("/login");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

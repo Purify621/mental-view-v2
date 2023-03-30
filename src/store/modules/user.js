@@ -9,6 +9,7 @@ const getDefaultState = () => {
     avatar: "",
     school: "",
     id: "",
+    sid: "",
   };
 };
 
@@ -34,6 +35,9 @@ const mutations = {
   SET_ID: (state, id) => {
     state.id = id;
   },
+  SET_SID: (state, sid) => {
+    state.sid = sid;
+  },
 };
 
 const actions = {
@@ -51,7 +55,9 @@ const actions = {
           // 存储用户学校
           commit("SET_SCHOOL", data.user.school);
           // 存储用户id
-          commit("SET_ID", data.user.sid);
+          commit("SET_ID", data.user.id);
+          // 存储学号
+          commit("SET_SID", data.user.sid);
           // 存储token
           commit("SET_TOKEN", data.token);
           // 设置token

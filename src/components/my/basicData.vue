@@ -58,7 +58,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["id"]),
+    ...mapGetters(["sid"]),
   },
   watch: {},
   created() {
@@ -68,7 +68,7 @@ export default {
   methods: {
     // 根据id获取学生信息
     getStudentInfo() {
-      getByIdInfo(this.id).then((res) => {
+      getByIdInfo(this.sid).then((res) => {
         this.user = res.data;
       });
     },

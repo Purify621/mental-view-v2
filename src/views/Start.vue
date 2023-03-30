@@ -53,6 +53,8 @@
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 import { getByIdQuestionInfo, getByIdQuestionAll } from "@/api/question";
+import { addUserResult } from "@/api/userResult";
+import { mapGetters } from "vuex";
 export default {
   name: "startView",
   components: { Header, Footer },
@@ -61,7 +63,7 @@ export default {
   data() {
     return {
       // 路由传递的试题id
-      id: 0,
+      rid: 0,
       // 进度条的值
       value: 0,
       // 字母数组
@@ -80,25 +82,21 @@ export default {
       testData: [],
       // 记录总的得分值
       totalValue: 0,
+      picturebox: "", // 记录小图片地址
     };
   },
   // 计算属性
-  computed: {},
+  computed: {
+    // 获取当前用户的id
+    ...mapGetters(["id", "name"]),
+  },
   // 侦听器
   watch: {
     // 侦听题目的变化，当题目到达试题的最大长度时，进行计算分值
-    index(newValue) {
-      // newValue 是最新的值
-      // 判断最新的值是否等于试题长度的最大值，相等则表示用户已经完成试题，进行分值计算
-      if (newValue === this.testLength) {
-        this.totalValue = this.calculation();
-        console.log(this.totalValue);
-      }
-    },
   },
   created() {
     // 获取路由传递的id
-    this.id = this.$route.params.id;
+    this.rid = this.$route.params.id;
     // 查询试题信息
     this.getByIdInfo();
     this.getByIdAll();
@@ -108,13 +106,14 @@ export default {
   methods: {
     // 根据试题id查询相关信息
     getByIdInfo() {
-      getByIdQuestionInfo(this.id).then((res) => {
+      getByIdQuestionInfo(this.rid).then((res) => {
+        this.picturebox = res.data.picturebox;
         this.titleName = res.data.title;
       });
     },
-    // 根据id获取所有题目及选项
+    // 根据试题id获取所有题目及选项
     getByIdAll() {
-      getByIdQuestionAll(this.id).then((res) => {
+      getByIdQuestionAll(this.rid).then((res) => {
         // 获取试题总数据
         this.testQuestionAll = res.data;
         // 获取试题总题数 (长度)
@@ -137,25 +136,48 @@ export default {
       option.forEach((item) => {
         item.style.pointerEvents = "none";
       });
+      // 获取当前选择的试题标题
+      const itemTitle = this.testQuestionAll[this.index]?.title;
+      // 把用户当前选择的 试题标题 试题选项以及试题分数存到一个新数组中
+      this.testData.push({
+        title: itemTitle,
+        answer: answer,
+        answerScore: answerScore,
+      });
       // 延迟1s执行的操作
       setTimeout(() => {
         // 试题进度索引++
         this.index++;
         if (this.index >= this.testLength) {
-          this.index = this.testLength;
+          console.log(this.testData);
+          this.calculation();
+          let userId = this.id;
+          let id = this.rid; // 获取试题id
+          let name = this.name; // 获取用户名称
+          let d = this.testData; // 当前用户选择的分值
+          let score = this.totalValue; // 当前的分值
+          let picturebox = this.picturebox; // 试题图片
+          let title = this.titleName; // 试题标题
+          // 向数据库中添加答题数据
+          let data = {
+            userId,
+            questionId: id,
+            problemName: name,
+            questionContent: d,
+            score,
+            picturebox,
+            title,
+          };
+          addUserResult(data).then((res) => {
+            if (res.code === 200) {
+              this.$router.push({ path: `/result/${id}` });
+            }
+          });
         }
         // 获取进度条平均值
         const average = this.average();
         // 计算进度条数值
         this.value = this.index * average;
-        // 获取当前选择的试题标题
-        const itemTitle = this.testQuestionAll[this.index]?.title;
-        // 把用户当前选择的 试题标题 试题选项以及试题分数存到一个新数组中
-        this.testData.push({
-          title: itemTitle,
-          answer: answer,
-          answerScore: answerScore,
-        });
       }, 1000);
     },
     // 返回进度条总数的平均值
@@ -175,9 +197,10 @@ export default {
     calculation() {
       let count = 0;
       this.testData.forEach((item) => {
-        count += item.answerScore;
+        console.log(item.answerScore);
+        count = count + item.answerScore;
       });
-      return count;
+      this.totalValue = count;
     },
   },
 };

@@ -43,7 +43,7 @@
         <!-- 头像和个人信息组件 -->
         <AvatarWrapper v-if="name" class="avatar_wrapper"></AvatarWrapper>
         <div v-else class="border-box">
-          <div class="content"><router-link to="/login">登录</router-link></div>
+          <div class="content" @click="toLogin"><a>登录</a></div>
         </div>
       </nav>
       <!-- 汉堡按钮组件 在视图小于992px时显示 -->
@@ -195,6 +195,8 @@ export default {
     // 获取所有试题
     QuesionBankAll() {
       getQuesionBankAll().then((res) => {
+        // 首页只显示8个试题
+        res.data.slice(0, 7);
         this.questionBank = res.data;
       });
     },
@@ -209,6 +211,10 @@ export default {
           }
         });
       });
+    },
+    // 跳转到登录页
+    toLogin() {
+      this.$router.push("/login");
     },
     jump(dom) {
       // 获取到需要跳转的元素
@@ -736,6 +742,8 @@ export default {
           padding: 50px 30px 50px 30px;
           .el-col {
             height: 85vh;
+            background-color: rgba($color: #debbf4, $alpha: 0.3);
+            border-radius: 10px;
             // 知识科普标题盒子
             .box {
               width: 220px;
@@ -783,7 +791,11 @@ export default {
                   bottom: 0; /* 置于文本下方 */
                   width: 0%; /* 初始宽度为0 */
                   height: 2px; /* 下划线高度 */
-                  background-color: black; /* 下划线颜色 */
+                  background: linear-gradient(
+                    40deg,
+                    #0db8ff 0%,
+                    #f332ff 100%
+                  ); /* 下划线颜色 */
                   transition: width 0.6s ease-out; /* 过渡动画 */
                 }
                 &:hover::before {

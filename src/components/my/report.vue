@@ -1,20 +1,92 @@
 <template>
   <!-- 完成报告 -->
-  <div>完成报告</div>
+  <div class="content">
+    <el-col :span="24">完成报告</el-col>
+    <el-col :span="24" class="con" v-for="item in data" :key="item.id">
+      <img :src="item.picturebox" alt="" />
+      <div class="text">
+        <p>{{ item.title }}</p>
+        <el-button type="text" @click="viewReport(item.questionId)"
+          >查看报告</el-button
+        >
+        <div class="success">
+          <img src="../../assets/svg/success.svg" alt="" />
+          <span>已完成</span>
+        </div>
+      </div>
+    </el-col>
+  </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
+import { getAll } from "@/api/userResult";
 export default {
   name: "reportView",
   components: {},
   mixins: [],
   props: {},
   data() {
-    return {};
+    return {
+      data: [],
+      queryList: { currentPage: 1, pageSize: 10, id: this.id },
+    };
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["id"]),
+  },
   watch: {},
-  mounted() {},
-  methods: {},
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      getAll(this.queryList).then((res) => {
+        this.data = res.data.data;
+      });
+    },
+    viewReport(id) {
+      this.$router.push({ path: `/result/${id}` });
+    },
+  },
 };
 </script>
-<style lang="" scoped></style>
+<style lang="scss" scoped>
+.content {
+  width: 100%;
+  height: 500px;
+  overflow-y: auto;
+  .con {
+    width: 100%;
+    height: 100px;
+    margin: 10px 0 10px 0;
+    display: flex;
+    background: rgb(237, 231, 240);
+    img {
+      margin: 10px;
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+    }
+    .text {
+      width: 100%;
+      position: relative;
+      margin-left: 10px;
+      .success {
+        position: absolute;
+        top: 10px;
+        right: 30px;
+        width: 50px;
+        height: 70px;
+        text-align: center;
+        img {
+          width: 30px;
+          height: 30px;
+        }
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+</style>

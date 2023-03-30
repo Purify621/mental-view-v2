@@ -136,11 +136,6 @@
         </div>
         <div class="right">
           <router-view></router-view>
-          <!-- <div v-if="tabStatus == 'Basicdata'" class="Basicdata">基本资料</div>
-          <div v-else-if="tabStatus == 'consultation'" class="consultation">
-            我的咨询
-          </div>
-          <div v-else class="report">完成报告</div> -->
         </div>
       </div>
     </el-main>
