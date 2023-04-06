@@ -162,7 +162,7 @@ export default {
           let data = {
             userId,
             questionId: id,
-            problemName: name,
+            pname: name,
             questionContent: d,
             score,
             picturebox,

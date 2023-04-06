@@ -1,0 +1,18 @@
+// global css
+
+// sidebar global css 侧边栏全局样式
+.sidebarGlobal{
+    overflow-y: auto;
+  }
+  
+  .sidebarGlobal::-webkit-scrollbar{
+    width: 10px;
+  }
+  .sidebarGlobal::-webkit-scrollbar-thumb {
+      background: #ccc; // 滑块颜色
+      border-radius: 5px; // 滑块圆角
+  }
+  
+  .sidebarGlobal::-webkit-scrollbar-thumb:hover {
+      background: gray; // 鼠标移入滑块变红
+  }
