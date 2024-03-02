@@ -62,7 +62,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["id"]),
+    ...mapGetters(["userId"]),
   },
   watch: {},
   created() {
@@ -74,7 +74,7 @@ export default {
   methods: {
     getData() {
       let data = {
-        userId: this.id,
+        userId: this.userId,
         questionId: this.rid,
       };
       getQid(data).then((res) => {

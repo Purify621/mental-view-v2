@@ -34,7 +34,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["id"]),
+    ...mapGetters(["userId"]),
   },
   watch: {},
   created() {
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     getData() {
-      this.queryList.sid = this.id;
+      this.queryList.sid = this.userId;
       getAll(this.queryList).then((res) => {
         this.data = res.data.data;
       });
